@@ -52,6 +52,10 @@ a:hover{
 opacity:0.6;
 }
 
+header a{
+border-bottom:none;
+}
+
 footer{
 margin-top:60px;
 font-size:14px;
@@ -59,7 +63,17 @@ opacity:0.7;
 text-align:center;
 }
 
-/* mobile */
+/* blocksatz nur auf größeren displays */
+
+@media (min-width:600px){
+
+p{
+text-align:justify;
+}
+
+}
+
+/* mobile layout */
 
 @media (max-width:600px){
 
@@ -79,7 +93,7 @@ line-height:1.85;
 <body>
 
 <header>
-<h1>2114112</h1>
+<h1><a href="/">2114112</a></h1>
 </header>
 
 <main>
@@ -97,4 +111,5 @@ in meontischen gründen agieren bedeutet, dass wir uns nicht an scheinbar objekt
 </footer>
 
 </body>
+
 </html>
