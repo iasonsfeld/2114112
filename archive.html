@@ -13,11 +13,16 @@
 body{
 background:black;
 color:white;
-font-family:monospace;
+font-family:"Courier New", Courier, monospace;
 margin:40px auto;
 max-width:720px;
 padding:20px;
 line-height:1.7;
+font-size:16px;
+}
+
+header{
+margin-bottom:60px;
 }
 
 a{
@@ -26,26 +31,37 @@ text-decoration:none;
 border-bottom:1px solid white;
 }
 
+a:hover{
+opacity:0.6;
+}
+
+@media (max-width:600px){
+
+body{
+margin:18px;
+padding:6px;
+font-size:18px;
+}
+
+}
+
 </style>
 
 </head>
 
 <body>
 
+<header>
 archive
-
-<br><br>
-
-<a href="texts/001.html">001</a>
-
-<br>
+</header>
 
 <a href="texts/002.html">002</a>
+<br>
+<a href="texts/001.html">001</a>
 
 <br><br>
 
-<a href="index.html">current</a>
+<a href="/">current</a>
 
 </body>
-
 </html>
