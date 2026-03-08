@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>003</title>
+
+<style>
+
+body{
+background:black;
+color:white;
+font-family:"Courier New", Courier, monospace;
+margin:40px auto;
+max-width:720px;
+padding:20px;
+line-height:1.7;
+font-size:16px;
+word-wrap:break-word;
+}
+
+header{
+margin-bottom:60px;
+}
+
+h1{
+font-weight:normal;
+font-size:18px;
+letter-spacing:2px;
+}
+
+p{
+margin-bottom:22px;
+}
+
+/* blocksatz nur auf größeren displays */
+
+@media (min-width:600px){
+
+p{
+text-align:justify;
+}
+
+}
+
+a{
+color:white;
+text-decoration:none;
+border-bottom:1px solid white;
+}
+
+a:hover{
+opacity:0.6;
+}
+
+footer{
+margin-top:60px;
+font-size:14px;
+opacity:0.7;
+}
+
+@media (max-width:600px){
+
+body{
+margin:18px;
+padding:6px;
+font-size:18px;
+line-height:1.8;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>003</h1>
+</header>
+
+<main>
+
+<p>
+epochenforschung? als müssten wir unseren vergangenen ichen ihre verwirklichungsstruktur ablesen, vertrauen wir den zeichen, die sie uns hinterlassen haben? strukturwachstum, wir nutzen die fläche, um zu zeigen, dass die scheinbare mehrdimensionalität noch hindernis ist, statt öffnung. nonrepräsentative logik des ausdrucks als kartographierung der modalen räume des fühlens. instabile energetische strukturen, statt substanzmetaphysik, es ist noch im werden, jedes gesetz ist nicht setzung, sondern gewordenes & vergehendes, die elemente von fluss & ufer stehen im formgebenden umkehrverhältnis: statik kann dynamik werden & vice versa. es entwickelt sich aus energetischen singularitäten. genesis aus überkreuzung, lege muster über muster & erzeuge intensität. auch nach jahren erscheinen vergessene formen im dynamischen repertoire. fehlerhaft wäre hier die denkform, die etwas vorhandenes zu sehen versucht, es ist nur die öffnung einer speziellen subjektivität, die innerlichkeit in ein medium überträgt, nur gefühl, zittern einer seele. mangelhafte interaktion der felder des fühlens verweise in das außerhalb des bildraums, unternehmung der zukunft, aber wir wisssen, dass es die unendlichkeit ist, die sich kontinuierlich in ewiger kreativität modifiziert. freude der auflösung: der erwachende pan: das rauschen des raums, erweiterung des feldes, wir überschreiten die klassische oberfläche, zeichenwurf in ungesehenes.
+</p>
+
+</main>
+
+<footer>
+
+<a href="/archive.html">archive</a>
+
+</footer>
+
+</body>
+</html>
