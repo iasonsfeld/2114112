@@ -34,6 +34,10 @@ letter-spacing:2px;
 margin:0;
 }
 
+.links{
+margin-top:10px;
+}
+
 main{
 max-width:720px;
 }
@@ -63,27 +67,44 @@ opacity:0.7;
 text-align:center;
 }
 
+/* bild-links */
+
+.image-links{
+margin-top:40px;
+display:flex;
+justify-content:center;
+gap:40px;
+}
+
+.image-links img{
+width:80px;
+height:auto;
+opacity:0.9;
+transition:opacity 0.2s ease;
+cursor:pointer;
+}
+
+.image-links img:hover{
+opacity:0.5;
+}
+
 /* blocksatz nur auf größeren displays */
 
 @media (min-width:600px){
-
 p{
 text-align:justify;
 }
-
 }
 
 /* mobile layout */
 
 @media (max-width:600px){
-
 body{
 margin:20px;
 padding:10px;
 font-size:18px;
 line-height:1.85;
 }
-
 }
 
 </style>
@@ -104,6 +125,20 @@ line-height:1.85;
 
 <div class="links">
 <a href="archive.html">archive</a>
+</div>
+
+<!-- bild-portale -->
+
+<div class="image-links">
+
+<a href="https://www.instagram.com/iyustream/" target="_blank">
+<img src="strichfigur.png" alt="">
+</a>
+
+<a href="https://www.instagram.com/tsnevtbl/" target="_blank">
+<img src="gesicht.png" alt="">
+</a>
+
 </div>
 
 </header>
