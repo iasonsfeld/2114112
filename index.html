@@ -73,8 +73,11 @@ text-align:center;
 margin-top:40px;
 display:flex;
 justify-content:center;
-gap:40px;
+align-items:center;
+gap:60px;
 }
+
+/* standard kleine icons */
 
 .image-links img{
 width:44px;
@@ -84,14 +87,18 @@ transition:opacity 0.2s ease;
 cursor:pointer;
 }
 
-.image-links img:hover{
-opacity:0.5;
+/* gesicht deutlich größer (überschreibt alles) */
+
+.image-links img.face{
+width:240px;
+max-width:none;
+flex-shrink:0;
 }
 
-/* gesicht größer */
+/* hover */
 
-.face{
-width:132px;
+.image-links img:hover{
+opacity:0.5;
 }
 
 /* blocksatz nur auf größeren displays */
@@ -111,6 +118,13 @@ padding:10px;
 font-size:18px;
 line-height:1.85;
 }
+
+/* auch mobil groß halten */
+
+.image-links img.face{
+width:180px;
+}
+
 }
 
 </style>
