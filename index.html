@@ -11,7 +11,7 @@
 <style>
 
 body{
-background:#1a1a1a url('/noise.svg') repeat;
+background:#161616;
 color:white;
 font-family:"Courier New", Courier, monospace;
 margin:40px auto;
@@ -83,6 +83,27 @@ max-width:none;
 flex-shrink:0;
 }
 
+/* glühen & atmen */
+
+.image-links img{
+filter:drop-shadow(0 0 4px rgba(255,255,255,0.35)) drop-shadow(0 0 14px rgba(255,255,255,0.12));
+animation:atmen 7s ease-in-out infinite;
+}
+
+.image-links a:nth-child(2) img{
+animation-duration:9s;
+animation-delay:-3s;
+}
+
+@keyframes atmen{
+0%,100%{transform:translateY(0);filter:drop-shadow(0 0 3px rgba(255,255,255,0.3)) drop-shadow(0 0 12px rgba(255,255,255,0.1));}
+50%{transform:translateY(-3px);filter:drop-shadow(0 0 6px rgba(255,255,255,0.45)) drop-shadow(0 0 20px rgba(255,255,255,0.16));}
+}
+
+@media (prefers-reduced-motion:reduce){
+.image-links img{animation:none;}
+}
+
 /* hover */
 
 .image-links img:hover{
@@ -149,6 +170,7 @@ in meontischen gründen agieren bedeutet, dass wir uns nicht an scheinbar objekt
 
 </main>
 
+<script src="/bg.js"></script>
 </body>
 
 </html>
