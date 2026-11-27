@@ -87,7 +87,7 @@ archive
 </nav>
 
 <noscript>
-<p><a href="texts/001.html">○○○○○○</a> · <a href="texts/002.html">○○○○○△</a> · <a href="texts/003.html">○○○○△○</a> · <a href="texts/004.html">○○○○△△</a></p>
+<p><a href="texts/001.html">○○○○○○○○</a> · <a href="texts/002.html">○○○○○○○△</a> · <a href="texts/003.html">○○○○○○△○</a> · <a href="texts/004.html">○○○○○○△△</a></p>
 </noscript>
 
 <br><br>
@@ -98,8 +98,8 @@ archive
 (function () {
   var texte = ["001", "002", "003", "004"];
 
-  // kenogramme: trito-normalformen der länge 6 (203 formen), in kanonischer folge
-  var LAENGE = 6, ZEICHEN = "○△□◇⬠⬡", kenogramme = [];
+  // kenogramme: trito-normalformen der länge 8 (4140 formen), in kanonischer folge
+  var LAENGE = 8, ZEICHEN = "○△□◇⬠⬡▽☆", kenogramme = [];
   (function erzeuge(p, m) {
     if (p.length === LAENGE) { kenogramme.push(p.map(function (v) { return ZEICHEN[v]; }).join("")); return; }
     for (var v = 0; v <= m + 1; v++) erzeuge(p.concat(v), Math.max(m, v));
