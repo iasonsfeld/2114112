@@ -12,11 +12,11 @@
   var ctx = c.getContext("2d");
   var img = ctx.createImageData(W, H);
   var d = img.data;
-  var basis = 14 + Math.random() * 6;
+  var basis = 7 + Math.random() * 4;
 
   for (var i = 0; i < W * H; i++) {
     var r = Math.random();
-    var g = basis + r * r * 46;
+    var g = basis + r * r * 34;
     var j = i * 4;
     d[j] = d[j + 1] = d[j + 2] = g;
     d[j + 3] = 255;
