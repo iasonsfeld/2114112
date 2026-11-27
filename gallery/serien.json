@@ -27,5 +27,62 @@
       "19"
     ],
     "link": "https://opensea.io/iyustrom/holdings?collectionSlugs=hieroglyphic-negativic-script&view=grid"
+  },
+  {
+    "id": "02",
+    "titel": "canvas",
+    "jahr": "",
+    "notiz": "",
+    "werke": [
+      {
+        "id": "00",
+        "titel": "fluktuation"
+      },
+      {
+        "id": "01",
+        "titel": "größenlos"
+      },
+      {
+        "id": "02",
+        "titel": "interdimensionaler austausch"
+      },
+      {
+        "id": "03",
+        "titel": "neue gefühle erzeugen"
+      },
+      {
+        "id": "04",
+        "titel": "noti"
+      },
+      {
+        "id": "05",
+        "titel": "unreduzierbarkeiten"
+      },
+      {
+        "id": "06",
+        "titel": "wege in nichts"
+      },
+      {
+        "id": "07",
+        "titel": "welten sterben"
+      },
+      {
+        "id": "08",
+        "titel": "wirkliche interaktionen"
+      },
+      {
+        "id": "09",
+        "titel": "zwischen"
+      },
+      {
+        "id": "10"
+      },
+      {
+        "id": "11"
+      },
+      {
+        "id": "12"
+      }
+    ]
   }
 ]

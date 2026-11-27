@@ -322,16 +322,18 @@ gallery
           sec.appendChild(n);
         }
 
-        s.werke.forEach(function (w, i) {
+        s.werke.forEach(function (eintrag, i) {
+          var w = typeof eintrag === "string" ? eintrag : eintrag.id;
+          var name = (typeof eintrag === "object" && eintrag.titel) || w;
           var fig = document.createElement("figure");
           fig.className = "werk";
           var img = document.createElement("img");
           img.src = "serien/" + s.id + "/" + w + ".jpg";
           img.dataset.gross = "serien/" + s.id + "/gross/" + w + ".jpg";
-          img.alt = s.titel + ", " + w;
+          img.alt = s.titel + ", " + name;
           img.loading = "lazy";
           var cap = document.createElement("figcaption");
-          cap.innerHTML = "<span>" + w + "</span><span>" + (i + 1) + " / " + s.werke.length + "</span>";
+          cap.innerHTML = "<span>" + name + "</span><span>" + (i + 1) + " / " + s.werke.length + "</span>";
           fig.appendChild(img); fig.appendChild(cap);
           sec.appendChild(fig);
           lupe(fig);
