@@ -299,7 +299,16 @@ galerie
         var kopf = document.createElement("div");
         kopf.className = "serie-kopf";
         var h = document.createElement("h2");
-        h.textContent = s.titel;
+        if (s.link) {
+          var hl = document.createElement("a");
+          hl.href = s.link;
+          hl.target = "_blank";
+          hl.rel = "noopener";
+          hl.textContent = s.titel + " ↗";
+          h.appendChild(hl);
+        } else {
+          h.textContent = s.titel;
+        }
         var meta = document.createElement("span");
         meta.className = "meta";
         meta.textContent = [s.jahr, s.werke.length + " arbeiten"].filter(Boolean).join(" · ");

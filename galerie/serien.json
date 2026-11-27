@@ -1,9 +1,15 @@
 [
   {
     "id": "01",
-    "titel": "serie 01",
+    "titel": "hieroglyphic negativic script",
     "jahr": "",
     "notiz": "",
-    "werke": ["01", "02", "03", "04"]
+    "werke": [
+      "01",
+      "02",
+      "03",
+      "04"
+    ],
+    "link": "https://opensea.io/iyustrom/holdings?collectionSlugs=hieroglyphic-negativic-script&view=grid"
   }
 ]
