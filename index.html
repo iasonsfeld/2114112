@@ -86,35 +86,48 @@ align-items:center;
 gap:60px;
 }
 
-/* standard kleine icons */
+/* symbole */
 
-.image-links img{
+.symbol{
+position:relative;
+display:block;
 width:44px;
-height:auto;
+aspect-ratio:273/844;
 opacity:0.9;
-transition:opacity 0.2s ease;
-cursor:pointer;
-}
-
-/* gesicht deutlich größer */
-
-.image-links img.face{
-width:240px;
-max-width:none;
-flex-shrink:0;
-}
-
-/* glühen & atmen */
-
-.image-links img{
+transition:opacity 0.3s ease;
 filter:drop-shadow(0 0 6px rgba(255,255,255,0.25));
 animation:atmen 8s ease-in-out infinite;
 }
 
-.image-links a:nth-child(2) img{
+.symbol.face{
+width:240px;
+aspect-ratio:960/378;
+flex-shrink:0;
 animation-duration:11s;
 animation-delay:-4s;
 }
+
+.symbol .teil{
+position:absolute;
+left:0;top:0;width:100%;height:auto;
+display:block;
+}
+
+/* blinzeln */
+.auge{
+transform-origin:50% 55%;
+transition:transform 90ms ease-in;
+}
+.face.blinzeln .auge{
+transform:scaleY(0.06);
+transition:transform 70ms ease-out;
+}
+
+/* gabel weitet sich */
+.gabel-l{transform-origin:100% 100%;transition:transform 1.6s cubic-bezier(.3,.6,.2,1);}
+.gabel-r{transform-origin:0% 100%;transition:transform 1.6s cubic-bezier(.3,.6,.2,1);}
+.figur.weiten .gabel-l{transform:rotate(-9deg);}
+.figur.weiten .gabel-r{transform:rotate(9deg);}
 
 @keyframes atmen{
 0%,100%{transform:translate(0,0) rotate(0deg) scale(1);filter:drop-shadow(0 0 5px rgba(255,255,255,0.2));}
@@ -124,14 +137,14 @@ animation-delay:-4s;
 }
 
 @media (prefers-reduced-motion:reduce){
-.image-links img{animation:none;}
+.symbol{animation:none;}
+.auge,.gabel-l,.gabel-r{transition:none;}
 }
 
-/* hover */
-
-.image-links img:hover{
+.image-links a:hover .symbol{
 opacity:0.5;
 }
+
 /* mobile layout */
 
 @media (max-width:600px){
@@ -142,7 +155,7 @@ font-size:18px;
 line-height:1.85;
 }
 
-.image-links img.face{
+.symbol.face{
 width:180px;
 }
 
@@ -186,11 +199,19 @@ a:focus-visible{outline:1px dotted white;outline-offset:4px;}
 <div class="image-links">
 
 <a href="https://www.instagram.com/iyustream/" target="_blank" rel="noopener">
-<img src="strichfigur.png" alt="strichfigur, Instagram @iyustream">
+<span class="symbol figur" role="img" aria-label="strichfigur, Instagram @iyustream">
+<img src="symbole/figur_rest.png" alt="" class="teil">
+<img src="symbole/gabel_l.png" alt="" class="teil gabel-l" style="left:0;top:0;width:49.817%;">
+<img src="symbole/gabel_r.png" alt="" class="teil gabel-r" style="left:49.817%;top:0;width:50.183%;">
+</span>
 </a>
 
 <a href="https://www.instagram.com/tsnevtbl/" target="_blank" rel="noopener">
-<img src="gesicht.png" class="face" alt="gesicht, Instagram @tsnevtbl">
+<span class="symbol face" role="img" aria-label="gesicht, Instagram @tsnevtbl">
+<img src="symbole/gesicht_rest.png" alt="" class="teil">
+<img src="symbole/auge_l.png" alt="" class="teil auge" style="left:0;top:7.937%;width:35.938%;">
+<img src="symbole/auge_r.png" alt="" class="teil auge" style="left:59.896%;top:7.937%;width:40.104%;">
+</span>
 </a>
 
 </div>
@@ -205,6 +226,36 @@ in meontischen gründen agieren bedeutet, dass wir uns nicht an scheinbar objekt
 
 </main>
 
+<script>
+(function () {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var face = document.querySelector(".symbol.face");
+  var figur = document.querySelector(".symbol.figur");
+  function zufall(a, b) { return a + Math.random() * (b - a); }
+
+  function blinzeln() {
+    face.classList.add("blinzeln");
+    setTimeout(function () {
+      face.classList.remove("blinzeln");
+      // manchmal doppelt
+      if (Math.random() < 0.2) setTimeout(function () {
+        face.classList.add("blinzeln");
+        setTimeout(function () { face.classList.remove("blinzeln"); }, 120);
+      }, 180);
+    }, 130);
+    setTimeout(blinzeln, zufall(2500, 7000));
+  }
+
+  function weiten() {
+    figur.classList.add("weiten");
+    setTimeout(function () { figur.classList.remove("weiten"); }, zufall(1800, 3200));
+    setTimeout(weiten, zufall(6000, 14000));
+  }
+
+  if (face) setTimeout(blinzeln, zufall(1200, 3000));
+  if (figur) setTimeout(weiten, zufall(2500, 6000));
+})();
+</script>
 <script src="/bg.js"></script>
 <script src="/cursor.js"></script>
 </body>
