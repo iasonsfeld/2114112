@@ -52,6 +52,18 @@ margin-bottom:8px;
 .gruppen{gap:28px;flex-wrap:wrap;justify-content:flex-start;}
 }
 
+.ereignis{
+margin-top:56px;
+font-size:14px;
+opacity:.85;
+}
+.ereignis .uhr{
+display:block;
+font-size:22px;
+letter-spacing:2px;
+margin-top:6px;
+font-variant-numeric:tabular-nums;
+}
 main{
 max-width:720px;
 }
@@ -221,6 +233,11 @@ a:focus-visible{outline:1px dotted white;outline-offset:4px;}
 in meontischen gründen agieren bedeutet, dass wir uns nicht an scheinbar objektiven dimensionen kontingenter welten orientieren, um nicht ihren gravitationen zu verfallen. erst die verwirklichung eines übergangs erschafft sender & empfänger gleichzeitig. wenn antworten erwartet werden, glauben wir noch an die existenz eines empfängers, dann glauben wir noch an die existenz eines senders.
 </p>
 
+<div class="ereignis" id="ereignis">
+mi 02.12. 20:00 · <a href="https://www.instagram.com/mauswa1d/" target="_blank" rel="noopener">mauswald</a> x sketchcorner · wem gehört die welt
+<span class="uhr" id="uhr" aria-live="off"></span>
+</div>
+
 </main>
 
 <script>
@@ -251,6 +268,24 @@ in meontischen gründen agieren bedeutet, dass wir uns nicht an scheinbar objekt
 
   if (face) setTimeout(blinzeln, zufall(1200, 3000));
   if (figur) setTimeout(weiten, zufall(2500, 6000));
+})();
+</script>
+<script>
+(function () {
+  // uhr bis zum nächsten ereignis; danach jetzt, nach drei stunden weg
+  var start = Date.parse("2026-12-02T20:00:00+01:00");
+  var box = document.getElementById("ereignis"), uhr = document.getElementById("uhr");
+  function zwei(n) { return (n < 10 ? "0" : "") + n; }
+  function ticken() {
+    var d = start - Date.now();
+    if (d <= -3 * 3600e3) { box.hidden = true; return; }
+    if (d <= 0) { uhr.textContent = "jetzt"; return setTimeout(ticken, 30000); }
+    var s = Math.floor(d / 1000);
+    var t = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    uhr.textContent = (t ? t + "t " : "") + zwei(h) + ":" + zwei(m) + ":" + zwei(s % 60);
+    setTimeout(ticken, 1000 - Date.now() % 1000);
+  }
+  ticken();
 })();
 </script>
 <script src="/bg.js"></script>
