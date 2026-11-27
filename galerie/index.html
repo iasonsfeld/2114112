@@ -36,27 +36,37 @@ opacity:0.6;
 
 a:focus-visible{outline:1px dotted white;outline-offset:4px;}
 
-.raster{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-gap:24px;
+.werk{
+position:relative;
+margin-bottom:96px;
+cursor:none;
+touch-action:pan-y;
 }
 
-.raster a{
-display:block;
-}
-
-.raster img{
+.werk img{
 width:100%;
 height:auto;
 display:block;
 }
 
-.raster span{
+.werk span{
 display:block;
 font-size:14px;
 opacity:0.7;
 margin-top:8px;
+}
+
+.lupe{
+position:absolute;
+width:240px;
+height:240px;
+border-radius:50%;
+border:1px solid white;
+pointer-events:none;
+background-repeat:no-repeat;
+background-color:black;
+transform:translate(-50%,-50%);
+display:none;
 }
 
 footer{
@@ -73,6 +83,11 @@ padding:6px;
 font-size:18px;
 }
 
+.lupe{
+width:160px;
+height:160px;
+}
+
 }
 
 </style>
@@ -85,16 +100,65 @@ font-size:18px;
 galerie
 </header>
 
-<main class="raster">
-<a href="bilder/01.jpg"><img src="bilder/01.jpg" alt="visuelle arbeit 01" loading="lazy"><span>01</span></a>
-<a href="bilder/02.jpg"><img src="bilder/02.jpg" alt="visuelle arbeit 02" loading="lazy"><span>02</span></a>
-<a href="bilder/03.jpg"><img src="bilder/03.jpg" alt="visuelle arbeit 03" loading="lazy"><span>03</span></a>
-<a href="bilder/04.jpg"><img src="bilder/04.jpg" alt="visuelle arbeit 04" loading="lazy"><span>04</span></a>
+<main>
+<figure class="werk"><img src="bilder/01.jpg" alt="visuelle arbeit 01"><span>01</span></figure>
+<figure class="werk"><img src="bilder/02.jpg" alt="visuelle arbeit 02" loading="lazy"><span>02</span></figure>
+<figure class="werk"><img src="bilder/03.jpg" alt="visuelle arbeit 03" loading="lazy"><span>03</span></figure>
+<figure class="werk"><img src="bilder/04.jpg" alt="visuelle arbeit 04" loading="lazy"><span>04</span></figure>
 </main>
 
 <footer>
 <a href="/">current</a>
 </footer>
+
+<script>
+(function () {
+  var ZOOM = 3;
+
+  document.querySelectorAll(".werk").forEach(function (werk) {
+    var img = werk.querySelector("img");
+    var lupe = document.createElement("div");
+    lupe.className = "lupe";
+    werk.appendChild(lupe);
+
+    function zeige(clientX, clientY) {
+      var r = img.getBoundingClientRect();
+      var x = clientX - r.left;
+      var y = clientY - r.top;
+      if (x < 0 || y < 0 || x > r.width || y > r.height) {
+        lupe.style.display = "none";
+        return;
+      }
+      var w = lupe.offsetWidth || 240;
+      lupe.style.display = "block";
+      lupe.style.left = x + "px";
+      lupe.style.top = y + "px";
+      lupe.style.backgroundImage = "url('" + img.currentSrc + "')";
+      lupe.style.backgroundSize = (r.width * ZOOM) + "px " + (r.height * ZOOM) + "px";
+      lupe.style.backgroundPosition =
+        (w / 2 - x * ZOOM) + "px " + (w / 2 - y * ZOOM) + "px";
+    }
+
+    werk.addEventListener("mousemove", function (e) { zeige(e.clientX, e.clientY); });
+    werk.addEventListener("mouseleave", function () { lupe.style.display = "none"; });
+
+    // touch: lange gedrückt halten, dann mit dem finger fahren
+    var halten = null, aktiv = false;
+    werk.addEventListener("touchstart", function (e) {
+      var t = e.touches[0];
+      halten = setTimeout(function () { aktiv = true; zeige(t.clientX, t.clientY); }, 250);
+    }, { passive: true });
+    werk.addEventListener("touchmove", function (e) {
+      if (!aktiv) { clearTimeout(halten); return; }
+      e.preventDefault();
+      zeige(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+    werk.addEventListener("touchend", function () {
+      clearTimeout(halten); aktiv = false; lupe.style.display = "none";
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
