@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>archive</title>
+<title>archive · 2114112</title>
 
 <style>
 
@@ -19,6 +19,7 @@ max-width:720px;
 padding:20px;
 line-height:1.7;
 font-size:16px;
+word-wrap:break-word;
 }
 
 header{
@@ -33,6 +34,35 @@ border-bottom:1px solid white;
 
 a:hover{
 opacity:0.6;
+}
+
+a:focus-visible{outline:1px dotted white;outline-offset:4px;}
+
+#zufall{
+margin-bottom:80px;
+min-height:200px;
+}
+
+#zufall p{
+text-align:justify;
+margin-bottom:26px;
+}
+
+#zufall .nummer{
+font-size:14px;
+opacity:0.7;
+margin-bottom:20px;
+}
+
+#zufall .weiter{
+display:inline-block;
+margin-bottom:60px;
+font-size:14px;
+}
+
+.liste{
+border-top:1px solid rgba(255,255,255,0.3);
+padding-top:30px;
 }
 
 @media (max-width:600px){
@@ -55,6 +85,9 @@ font-size:18px;
 archive
 </header>
 
+<section id="zufall" aria-live="polite"></section>
+
+<nav class="liste">
 <a href="texts/004.html">004</a>
 <br>
 <a href="texts/003.html">003</a>
@@ -62,11 +95,57 @@ archive
 <a href="texts/002.html">002</a>
 <br>
 <a href="texts/001.html">001</a>
-  
+</nav>
 
 <br><br>
 
 <a href="/">current</a>
+
+<script>
+(function () {
+  var texte = ["001", "002", "003", "004"];
+  var ziel = document.getElementById("zufall");
+  var letzter = null;
+
+  function zeige() {
+    var kandidaten = texte.filter(function (t) { return t !== letzter; });
+    var nummer = kandidaten[Math.floor(Math.random() * kandidaten.length)];
+    letzter = nummer;
+
+    fetch("texts/" + nummer + ".html")
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, "text/html");
+        var absaetze = doc.querySelectorAll("main p");
+        ziel.innerHTML = "";
+
+        var kopf = document.createElement("div");
+        kopf.className = "nummer";
+        kopf.textContent = nummer;
+        ziel.appendChild(kopf);
+
+        absaetze.forEach(function (p) {
+          ziel.appendChild(document.importNode(p, true));
+        });
+
+        var weiter = document.createElement("a");
+        weiter.href = "#";
+        weiter.className = "weiter";
+        weiter.textContent = "anderer text";
+        weiter.addEventListener("click", function (e) {
+          e.preventDefault();
+          zeige();
+        });
+        ziel.appendChild(weiter);
+      })
+      .catch(function () {
+        ziel.textContent = "";
+      });
+  }
+
+  zeige();
+})();
+</script>
 
 </body>
 </html>
