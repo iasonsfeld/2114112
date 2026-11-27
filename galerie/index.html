@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>galerie · 2114112</title>
+
+<style>
+
+body{
+background:black;
+color:white;
+font-family:"Courier New", Courier, monospace;
+margin:40px auto;
+max-width:960px;
+padding:20px;
+line-height:1.7;
+font-size:16px;
+}
+
+header{
+margin-bottom:64px;
+}
+
+a{
+color:white;
+text-decoration:none;
+}
+
+a:hover{
+opacity:0.6;
+}
+
+a:focus-visible{outline:1px dotted white;outline-offset:4px;}
+
+.raster{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:24px;
+}
+
+.raster a{
+display:block;
+}
+
+.raster img{
+width:100%;
+height:auto;
+display:block;
+}
+
+.raster span{
+display:block;
+font-size:14px;
+opacity:0.7;
+margin-top:8px;
+}
+
+footer{
+margin-top:64px;
+font-size:14px;
+opacity:0.7;
+}
+
+@media (max-width:600px){
+
+body{
+margin:18px;
+padding:6px;
+font-size:18px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+galerie
+</header>
+
+<main class="raster">
+<a href="bilder/01.jpg"><img src="bilder/01.jpg" alt="visuelle arbeit 01" loading="lazy"><span>01</span></a>
+<a href="bilder/02.jpg"><img src="bilder/02.jpg" alt="visuelle arbeit 02" loading="lazy"><span>02</span></a>
+<a href="bilder/03.jpg"><img src="bilder/03.jpg" alt="visuelle arbeit 03" loading="lazy"><span>03</span></a>
+<a href="bilder/04.jpg"><img src="bilder/04.jpg" alt="visuelle arbeit 04" loading="lazy"><span>04</span></a>
+</main>
+
+<footer>
+<a href="/">current</a>
+</footer>
+
+</body>
+</html>
