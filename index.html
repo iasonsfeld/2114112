@@ -27,8 +27,29 @@ margin-bottom:64px;
 text-align:center;
 }
 
-.links{
-margin-top:10px;
+.gruppen{
+display:flex;
+justify-content:center;
+gap:56px;
+text-align:left;
+font-size:14px;
+}
+
+.gruppe{
+display:flex;
+flex-direction:column;
+gap:2px;
+}
+
+.gruppe .kopf{
+font-size:11px;
+letter-spacing:2px;
+opacity:0.4;
+margin-bottom:8px;
+}
+
+@media (max-width:600px){
+.gruppen{gap:28px;flex-wrap:wrap;justify-content:flex-start;}
 }
 
 main{
@@ -137,16 +158,28 @@ a:focus-visible{outline:1px dotted white;outline-offset:4px;}
 
 <header>
 
-<div class="links">
-<a href="https://www.instagram.com/iyustrom/">@iyustrom</a>
-<a href="https://www.tiktok.com/@lastmedium">@lastmedium</a>
-<a href="https://x.com/flowtheorem">@flowtheorem</a>
+<nav class="gruppen">
+
+<div class="gruppe">
+<span class="kopf">site</span>
+<a href="gallery/">gallery</a>
+<a href="archive.html">archive</a>
 </div>
 
-<div class="links">
-<a href="archive.html">archive</a>
-<a href="gallery/">gallery</a>
+<div class="gruppe">
+<span class="kopf">accounts</span>
+<a href="https://www.instagram.com/iyustrom/" target="_blank" rel="noopener">@iyustrom</a>
+<a href="https://www.tiktok.com/@lastmedium" target="_blank" rel="noopener">@lastmedium</a>
+<a href="https://x.com/flowtheorem" target="_blank" rel="noopener">@flowtheorem</a>
 </div>
+
+<div class="gruppe">
+<span class="kopf">projekte</span>
+<a href="https://www.instagram.com/lichtungn/" target="_blank" rel="noopener">@lichtungn</a>
+<a href="https://www.instagram.com/mauswa1d/" target="_blank" rel="noopener">@mauswa1d</a>
+</div>
+
+</nav>
 
 <!-- bild-portale -->
 
