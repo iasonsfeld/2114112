@@ -92,15 +92,18 @@ display:block;min-height:1.4em;font-size:11px;opacity:0.55;margin-top:6px;
 .betrachter{
 position:fixed;inset:0;z-index:10;
 background:rgba(8,8,8,0.97);
-display:none;
+display:block;
+visibility:hidden;
+opacity:0;
+transition:opacity .45s cubic-bezier(.2,.6,.2,1), visibility 0s linear .45s;
 overflow:hidden;
 touch-action:none;
 cursor:crosshair;
 }
-.betrachter.offen{display:block;}
+.betrachter.offen{visibility:visible;opacity:1;transition:opacity .45s cubic-bezier(.2,.6,.2,1);}
 .betrachter.ziehen{cursor:grabbing;}
 .betrachter img{
-transition:opacity 0.35s ease;
+transition:opacity .5s cubic-bezier(.2,.6,.2,1);
 position:absolute;left:50%;top:50%;
 max-width:none;
 transform-origin:0 0;
@@ -134,3 +137,14 @@ body{margin:18px;padding:6px;}
 .raster{grid-template-columns:repeat(2,1fr);gap:12px;}
 .leiste{flex-wrap:wrap;gap:8px;padding:12px;}
 }
+
+/* auftauchen der kacheln */
+@keyframes auftauchen{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.serien a,.raster button{animation:auftauchen .8s cubic-bezier(.2,.6,.2,1) both;}
+.deckel img,.raster img{transition:transform 1.4s cubic-bezier(.2,.6,.2,1), filter .6s ease;}
+.leiste{transition:opacity .8s ease;}
+@media (prefers-reduced-motion:reduce){
+.serien a,.raster button{animation:none;}
+.betrachter,.betrachter img{transition:none;}
+}
+#name{transition:opacity .5s ease;}

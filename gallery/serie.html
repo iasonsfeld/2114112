@@ -57,13 +57,16 @@
     bild.style.transform = "translate(" + x + "px," + y + "px) scale(" + (basis * z) + ")";
   }
 
-  function schritt() {
-    var k = 0.18;
+  var zuletzt = 0;
+  function schritt(t) {
+    var dt = zuletzt ? Math.min(64, t - zuletzt) : 16;
+    zuletzt = t;
+    var k = 1 - Math.exp(-dt / 90);
     z += (zz - z) * k; x += (zx - x) * k; y += (zy - y) * k;
     var fertig = Math.abs(zz - z) < 0.0005 && Math.abs(zx - x) < 0.1 && Math.abs(zy - y) < 0.1;
     if (fertig) { z = zz; x = zx; y = zy; }
     zeichnen();
-    if (!fertig) requestAnimationFrame(schritt); else laeuft = false;
+    if (!fertig) requestAnimationFrame(schritt); else { laeuft = false; zuletzt = 0; }
   }
   function animieren() { if (!laeuft) { laeuft = true; requestAnimationFrame(schritt); } }
 
@@ -106,10 +109,17 @@
   function zeigen(i) {
     index = (i + werke.length) % werke.length;
     var w = werke[index];
-    document.getElementById("name").textContent = w.name;
+    var nameEl = document.getElementById("name");
+    nameEl.style.opacity = 0;
     bild.style.opacity = 0;
-    bild.onload = function () { einpassen(); bild.style.opacity = 1; };
-    bild.src = "serien/" + id + "/" + w.id + ".jpg";
+    var laden = function () {
+      bild.onload = function () {
+        einpassen();
+        requestAnimationFrame(function () { bild.style.opacity = 1; nameEl.textContent = w.name; nameEl.style.opacity = 1; });
+      };
+      bild.src = "serien/" + id + "/" + w.id + ".jpg";
+    };
+    if (bild.getAttribute("src")) setTimeout(laden, 280); else laden();
     bild.alt = w.name || serie.titel;
     var g = new Image();
     g.onload = function () {
@@ -140,7 +150,7 @@
   function schliessen() {
     betr.classList.remove("offen"); leiste.hidden = true;
     document.body.style.overflow = "";
-    bild.removeAttribute("src");
+    setTimeout(function () { if (!betr.classList.contains("offen")) { bild.removeAttribute("src"); bild.style.opacity = 0; } }, 460);
   }
 
   document.getElementById("zu").onclick = schliessen;
@@ -251,6 +261,7 @@
       b.innerHTML = '<div class="bild"><img loading="lazy" alt=""></div>';
       b.querySelector("img").src = "serien/" + id + "/klein/" + w.id + ".jpg";
       b.querySelector("img").alt = w.name || serie.titel;
+      b.style.animationDelay = Math.min(i * 45, 900) + "ms";
       b.addEventListener("click", function () { oeffnen(i); });
       raster.appendChild(b);
     });

@@ -23,7 +23,10 @@
     "a,button,[role=button]{cursor:" + ring + ",pointer !important;}" +
     ".raster button{cursor:" + oeffnen + ",zoom-in !important;}" +
     ".betrachter,.betrachter.ziehen{cursor:" + punkt + ",crosshair !important;}" +
-    ".image-links img{cursor:inherit !important;}";
+    ".image-links img{cursor:inherit !important;}" +
+    "@keyframes einblenden{from{opacity:0}to{opacity:1}}" +
+    "body>*:not(canvas):not(.betrachter):not(.leiste){animation:einblenden .9s cubic-bezier(.2,.6,.2,1) both;}" +
+    "@media (prefers-reduced-motion:reduce){body>*{animation:none !important;}}";
   var st = document.createElement("style");
   st.textContent = css;
   document.head.appendChild(st);

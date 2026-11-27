@@ -15,10 +15,11 @@
 <script>
 fetch("serien.json").then(function (r) { return r.json(); }).then(function (serien) {
   var main = document.getElementById("serien");
-  serien.forEach(function (s) {
+  serien.forEach(function (s, i) {
     var erstes = typeof s.werke[0] === "string" ? s.werke[0] : s.werke[0].id;
     var a = document.createElement("a");
     a.href = "serie.html?s=" + s.id;
+    a.style.animationDelay = (i * 120) + "ms";
     a.innerHTML =
       '<div class="deckel"><img src="serien/' + s.id + '/klein/' + erstes + '.jpg" alt=""></div>' +
       '<div class="titel"><span></span></div>';
