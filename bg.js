@@ -1,45 +1,25 @@
 (function () {
-  // weiches, stark verschwommenes rauschen, bei jedem laden neu
+  // feines fernsehrauschen, bei jedem laden neu
   var c = document.createElement("canvas");
   c.setAttribute("aria-hidden", "true");
-  c.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;";
+  c.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;image-rendering:pixelated;";
   document.body.prepend(c);
 
-  var W = 480, H = Math.round(480 * innerHeight / Math.max(innerWidth, 1));
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W = Math.min(Math.ceil(Math.max(innerWidth, screen.width || 0) * dpr), 3840);
+  var H = Math.min(Math.ceil(Math.max(innerHeight, screen.height || 0) * dpr), 2400);
   c.width = W; c.height = H;
-  c.style.filter = "blur(1.5px)";
   var ctx = c.getContext("2d");
   var img = ctx.createImageData(W, H);
+  var d = img.data;
+  var basis = 14 + Math.random() * 6;
 
-  function gitter(gx, gy) {
-    var g = [];
-    for (var i = 0; i < (gx + 3) * (gy + 3); i++) g.push(Math.random());
-    return { gx: gx, gy: gy, g: g };
-  }
-  function glatt(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
-  function wert(o, x, y) {
-    var fx = x * o.gx, fy = y * o.gy;
-    var ix = Math.floor(fx), iy = Math.floor(fy);
-    var tx = glatt(fx - ix), ty = glatt(fy - iy);
-    var w = o.gx + 3;
-    var a = o.g[iy * w + ix], b = o.g[iy * w + ix + 1];
-    var c2 = o.g[(iy + 1) * w + ix], d = o.g[(iy + 1) * w + ix + 1];
-    return (a + (b - a) * tx) * (1 - ty) + (c2 + (d - c2) * tx) * ty;
-  }
-
-  var o1 = gitter(8, 5), o2 = gitter(22, 14), o3 = gitter(60, 38);
-  var basis = 16 + Math.random() * 6;
-  var spanne = 22 + Math.random() * 10;
-
-  for (var y = 0; y < H; y++) {
-    for (var x = 0; x < W; x++) {
-      var u = x / W, v = y / H;
-      var n = wert(o1, u, v) * 0.45 + wert(o2, u, v) * 0.35 + wert(o3, u, v) * 0.2;
-      var g = basis + n * spanne + (Math.random() - 0.5) * 1.5; // leichtes dithering gegen streifen
-      var i = (y * W + x) * 4;
-      img.data[i] = img.data[i + 1] = img.data[i + 2] = g;
-      img.data[i + 3] = 255;
-    }
+  for (var i = 0; i < W * H; i++) {
+    var r = Math.random();
+    var g = basis + r * r * 46;
+    var j = i * 4;
+    d[j] = d[j + 1] = d[j + 2] = g;
+    d[j + 3] = 255;
   }
   ctx.putImageData(img, 0, 0);
 })();
