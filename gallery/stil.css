@@ -148,3 +148,5 @@ body{margin:18px;padding:6px;}
 .betrachter,.betrachter img{transition:none;}
 }
 #name{transition:opacity .5s ease;}
+
+.pixel .bild img, .pixel #gross { image-rendering: pixelated; }

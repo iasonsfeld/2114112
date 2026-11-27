@@ -31,7 +31,7 @@
 (function () {
   var MIN = 1, MAX = 12;
   var id = new URLSearchParams(location.search).get("s");
-  var werke = [], serie, index = 0;
+  var werke = [], serie, index = 0, endung = "jpg";
 
   var betr = document.getElementById("betrachter");
   var bild = document.getElementById("gross");
@@ -117,10 +117,11 @@
         einpassen();
         requestAnimationFrame(function () { bild.style.opacity = 1; nameEl.textContent = w.name; nameEl.style.opacity = 1; });
       };
-      bild.src = "serien/" + id + "/" + w.id + ".jpg";
+      bild.src = "serien/" + id + "/" + w.id + "." + endung;
     };
     if (bild.getAttribute("src")) setTimeout(laden, 280); else laden();
     bild.alt = w.name || serie.titel;
+    if (serie.gross === false) return;
     var g = new Image();
     g.onload = function () {
       if (werke[index] !== w) return;
@@ -241,6 +242,8 @@
   fetch("serien.json").then(function (r) { return r.json(); }).then(function (alle) {
     serie = alle.filter(function (s) { return s.id === id; })[0] || alle[0];
     id = serie.id;
+    endung = serie.endung || "jpg";
+    if (endung === "gif") document.body.classList.add("pixel");
     document.title = serie.titel + " · 2114112";
     document.getElementById("pfadname").textContent = serie.titel;
     document.getElementById("titel").textContent = serie.titel;
@@ -259,7 +262,7 @@
       werke.push(w);
       var b = document.createElement("button");
       b.innerHTML = '<div class="bild"><img loading="lazy" alt=""></div>';
-      b.querySelector("img").src = "serien/" + id + "/klein/" + w.id + ".jpg";
+      b.querySelector("img").src = "serien/" + id + (serie.klein === false ? "/" : "/klein/") + w.id + "." + endung;
       b.querySelector("img").alt = w.name || serie.titel;
       b.style.animationDelay = Math.min(i * 45, 900) + "ms";
       b.addEventListener("click", function () { oeffnen(i); });
