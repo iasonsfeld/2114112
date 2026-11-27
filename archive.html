@@ -87,7 +87,7 @@ archive
 </nav>
 
 <noscript>
-<p><a href="texts/001.html">001</a> · <a href="texts/002.html">002</a> · <a href="texts/003.html">003</a> · <a href="texts/004.html">004</a></p>
+<p><a href="texts/001.html">○○○○</a> · <a href="texts/002.html">○○○△</a> · <a href="texts/003.html">○○△○</a> · <a href="texts/004.html">○○△△</a></p>
 </noscript>
 
 <br><br>
@@ -97,6 +97,14 @@ archive
 <script>
 (function () {
   var texte = ["001", "002", "003", "004"];
+
+  // kenogramme: trito-normalformen der länge 4, in kanonischer folge
+  var ZEICHEN = "○△□◇", kenogramme = [];
+  (function erzeuge(p, m) {
+    if (p.length === 4) { kenogramme.push(p.map(function (v) { return ZEICHEN[v]; }).join("")); return; }
+    for (var v = 0; v <= m + 1; v++) erzeuge(p.concat(v), Math.max(m, v));
+  })([0], 0);
+  function kenogramm(nummer) { return kenogramme[parseInt(nummer, 10) - 1] || nummer; }
   var ziel = document.getElementById("zufall");
   var verlauf = [];
   var position = -1;
@@ -110,7 +118,7 @@ archive
 
         var kopf = document.createElement("div");
         kopf.className = "nummer";
-        kopf.textContent = nummer;
+        kopf.textContent = kenogramm(nummer);
         ziel.appendChild(kopf);
 
         doc.querySelectorAll("main p").forEach(function (p) {
