@@ -83,7 +83,7 @@
   function zeigen(i) {
     index = (i + werke.length) % werke.length;
     var w = werke[index];
-    document.getElementById("name").textContent = w.name + "   ·   " + (index + 1) + " / " + werke.length;
+    document.getElementById("name").textContent = w.name + "  " + (index + 1) + "/" + werke.length;
     bild.onload = einpassen;
     bild.src = "serien/" + id + "/" + w.id + ".jpg";
     bild.alt = w.name;
@@ -98,10 +98,22 @@
     g.src = "serien/" + id + "/gross/" + w.id + ".jpg";
   }
 
+  // leiste blendet bei ruhe aus
+  var ruhe = null;
+  function wach() {
+    leiste.classList.remove("still");
+    clearTimeout(ruhe);
+    ruhe = setTimeout(function () { leiste.classList.add("still"); }, 1800);
+  }
+  ["pointermove", "wheel", "keydown", "pointerdown"].forEach(function (ev) {
+    addEventListener(ev, function () { if (betr.classList.contains("offen")) wach(); }, { passive: true });
+  });
+
   function oeffnen(i) {
     betr.classList.add("offen"); leiste.hidden = false;
     document.body.style.overflow = "hidden";
     zeigen(i);
+    wach();
   }
   function schliessen() {
     betr.classList.remove("offen"); leiste.hidden = true;
