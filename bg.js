@@ -5,8 +5,9 @@
   c.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;";
   document.body.prepend(c);
 
-  var W = 320, H = 200;
+  var W = 480, H = Math.round(480 * innerHeight / Math.max(innerWidth, 1));
   c.width = W; c.height = H;
+  c.style.filter = "blur(1.5px)";
   var ctx = c.getContext("2d");
   var img = ctx.createImageData(W, H);
 
@@ -26,14 +27,14 @@
     return (a + (b - a) * tx) * (1 - ty) + (c2 + (d - c2) * tx) * ty;
   }
 
-  var o1 = gitter(3, 2), o2 = gitter(6, 4), o3 = gitter(12, 8);
+  var o1 = gitter(8, 5), o2 = gitter(22, 14), o3 = gitter(60, 38);
   var basis = 16 + Math.random() * 6;
   var spanne = 22 + Math.random() * 10;
 
   for (var y = 0; y < H; y++) {
     for (var x = 0; x < W; x++) {
       var u = x / W, v = y / H;
-      var n = wert(o1, u, v) * 0.6 + wert(o2, u, v) * 0.3 + wert(o3, u, v) * 0.1;
+      var n = wert(o1, u, v) * 0.45 + wert(o2, u, v) * 0.35 + wert(o3, u, v) * 0.2;
       var g = basis + n * spanne + (Math.random() - 0.5) * 1.5; // leichtes dithering gegen streifen
       var i = (y * W + x) * 4;
       img.data[i] = img.data[i + 1] = img.data[i + 2] = g;

@@ -96,8 +96,10 @@ animation-delay:-4s;
 }
 
 @keyframes atmen{
-0%,100%{transform:translateY(0);filter:drop-shadow(0 0 5px rgba(255,255,255,0.2));}
-50%{transform:translateY(-2px);filter:drop-shadow(0 0 9px rgba(255,255,255,0.35));}
+0%,100%{transform:translate(0,0) rotate(0deg) scale(1);filter:drop-shadow(0 0 5px rgba(255,255,255,0.2));}
+25%{transform:translate(2px,-4px) rotate(1.2deg) scale(1.015);}
+50%{transform:translate(0,-6px) rotate(0deg) scale(1.03);filter:drop-shadow(0 0 10px rgba(255,255,255,0.38));}
+75%{transform:translate(-2px,-3px) rotate(-1.2deg) scale(1.015);}
 }
 
 @media (prefers-reduced-motion:reduce){
