@@ -95,7 +95,7 @@ background:rgba(8,8,8,0.97);
 display:none;
 overflow:hidden;
 touch-action:none;
-cursor:grab;
+cursor:crosshair;
 }
 .betrachter.offen{display:block;}
 .betrachter.ziehen{cursor:grabbing;}

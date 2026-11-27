@@ -77,6 +77,19 @@
     animieren();
   }
 
+  // maus führt durchs bild: mausposition im fenster = position im bild
+  var maus = null;
+  function folgen(px, py) {
+    var s = basis * zz;
+    var w = bild.naturalWidth * s, h = bild.naturalHeight * s;
+    var vw = innerWidth, vh = innerHeight, rand = 0.08;
+    var fx = Math.min(1, Math.max(0, (px / vw - rand) / (1 - 2 * rand)));
+    var fy = Math.min(1, Math.max(0, (py / vh - rand) / (1 - 2 * rand)));
+    zx = w > vw ? -(w - vw) * fx - vw / 2 : -w / 2;
+    zy = h > vh ? -(h - vh) * fy - vh / 2 : -h / 2;
+    animieren();
+  }
+
   // sofort setzen (beim ziehen)
   function sofort(nz, nx, ny) {
     nz = Math.max(MIN, Math.min(MAX, nz));
@@ -148,10 +161,12 @@
     e.preventDefault();
     var d = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
     zielZoom(zz * Math.exp(-d * 0.0022), e.clientX, e.clientY);
+    if (maus) folgen(e.clientX, e.clientY);
   }, { passive: false });
 
   betr.addEventListener("dblclick", function (e) {
     zielZoom(zz > 1.5 ? 1 : 4, e.clientX, e.clientY);
+    if (maus) folgen(e.clientX, e.clientY);
   });
 
   // ziehen & zwei finger
@@ -166,6 +181,7 @@
     else start = null;
   }
   betr.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "mouse") { bewegt = false; return; }
     betr.setPointerCapture(e.pointerId);
     zeiger.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (zeiger.size === 1) bewegt = false;
@@ -174,6 +190,11 @@
     betr.classList.add("ziehen");
   });
   betr.addEventListener("pointermove", function (e) {
+    if (e.pointerType === "mouse" && !zeiger.size) {
+      maus = { x: e.clientX, y: e.clientY };
+      if (zz > 1.01) folgen(e.clientX, e.clientY);
+      return;
+    }
     if (!zeiger.has(e.pointerId) || !start) return;
     zeiger.set(e.pointerId, { x: e.clientX, y: e.clientY });
     var p = Array.from(zeiger.values());
@@ -192,6 +213,10 @@
     }
   });
   function los(e) {
+    if (e.pointerType === "mouse") {
+      if (e.target === betr && zz <= 1.01) schliessen();
+      return;
+    }
     zeiger.delete(e.pointerId);
     if (zeiger.size === 0) {
       betr.classList.remove("ziehen");
@@ -223,10 +248,9 @@
       var w = typeof e === "string" ? { id: e, name: "" } : { id: e.id, name: e.titel || "" };
       werke.push(w);
       var b = document.createElement("button");
-      b.innerHTML = '<div class="bild"><img loading="lazy" alt=""></div><small><span></span></small>';
+      b.innerHTML = '<div class="bild"><img loading="lazy" alt=""></div>';
       b.querySelector("img").src = "serien/" + id + "/klein/" + w.id + ".jpg";
       b.querySelector("img").alt = w.name || serie.titel;
-      b.querySelector("small span").textContent = w.name;
       b.addEventListener("click", function () { oeffnen(i); });
       raster.appendChild(b);
     });
