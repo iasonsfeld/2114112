@@ -21,7 +21,7 @@ fetch("serien.json").then(function (r) { return r.json(); }).then(function (seri
     a.href = "serie.html?s=" + s.id;
     a.innerHTML =
       '<div class="deckel"><img src="serien/' + s.id + '/klein/' + erstes + '.jpg" alt=""></div>' +
-      '<div class="titel"><span></span><span>' + s.werke.length + '</span></div>';
+      '<div class="titel"><span></span></div>';
     a.querySelector(".titel span").textContent = s.titel;
     main.appendChild(a);
   });

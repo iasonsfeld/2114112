@@ -20,7 +20,6 @@
 </div>
 <div class="leiste" id="leiste" hidden>
   <span id="name"></span>
-  <span class="stufen" id="stufen"></span>
   <span>
     <button id="zurueck" aria-label="vorheriges werk">⟲</button>
     <button id="weiter" aria-label="nächstes werk">⟳</button>
@@ -30,75 +29,86 @@
 
 <script>
 (function () {
-  var STUFEN = [1, 2, 4, 8, 12];
+  var MIN = 1, MAX = 12;
   var id = new URLSearchParams(location.search).get("s");
   var werke = [], serie, index = 0;
 
   var betr = document.getElementById("betrachter");
   var bild = document.getElementById("gross");
   var leiste = document.getElementById("leiste");
-  var stufenEl = document.getElementById("stufen");
 
-  // zustand: grundmaß (bild passt in fenster) * zoom, verschiebung
-  var basis = 1, zoom = 1, tx = 0, ty = 0;
+  // basis: maß, bei dem das bild ins fenster passt
+  // aktuell (z, x, y) gleitet weich zum ziel (zz, zx, zy)
+  var basis = 1;
+  var z = 1, x = 0, y = 0;
+  var zz = 1, zx = 0, zy = 0;
+  var laeuft = false;
 
-  function anwenden() {
-    var s = basis * zoom;
-    bild.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
-    stufenEl.querySelectorAll("button").forEach(function (b) {
-      b.classList.toggle("an", Number(b.dataset.z) === zoom);
-    });
-  }
-
-  function begrenzen() {
+  function grenzen(zoom, px, py) {
     var s = basis * zoom;
     var w = bild.naturalWidth * s, h = bild.naturalHeight * s;
     var vw = innerWidth, vh = innerHeight;
-    // bild-ecke relativ zur fenstermitte
     var minX = w > vw ? vw / 2 - w : -w / 2, maxX = w > vw ? -vw / 2 : -w / 2;
     var minY = h > vh ? vh / 2 - h : -h / 2, maxY = h > vh ? -vh / 2 : -h / 2;
-    tx = Math.min(maxX, Math.max(minX, tx));
-    ty = Math.min(maxY, Math.max(minY, ty));
+    return [Math.min(maxX, Math.max(minX, px)), Math.min(maxY, Math.max(minY, py))];
   }
 
-  function zoomen(neu, px, py) {
-    // px, py: bildschirmpunkt, der fix bleiben soll
-    if (px === undefined) { px = innerWidth / 2; py = innerHeight / 2; }
+  function zeichnen() {
+    bild.style.transform = "translate(" + x + "px," + y + "px) scale(" + (basis * z) + ")";
+  }
+
+  function schritt() {
+    var k = 0.18;
+    z += (zz - z) * k; x += (zx - x) * k; y += (zy - y) * k;
+    var fertig = Math.abs(zz - z) < 0.0005 && Math.abs(zx - x) < 0.1 && Math.abs(zy - y) < 0.1;
+    if (fertig) { z = zz; x = zx; y = zy; }
+    zeichnen();
+    if (!fertig) requestAnimationFrame(schritt); else laeuft = false;
+  }
+  function animieren() { if (!laeuft) { laeuft = true; requestAnimationFrame(schritt); } }
+
+  // ziel-zoom um einen bildschirmpunkt
+  function zielZoom(neu, px, py) {
+    neu = Math.max(MIN, Math.min(MAX, neu));
     var mx = px - innerWidth / 2, my = py - innerHeight / 2;
-    var alt = basis * zoom, n = basis * neu;
-    tx = mx - (mx - tx) * n / alt;
-    ty = my - (my - ty) * n / alt;
-    zoom = neu;
-    begrenzen(); anwenden();
+    var nx = mx - (mx - zx) * neu / zz, ny = my - (my - zy) * neu / zz;
+    var g = grenzen(neu, nx, ny);
+    zz = neu; zx = g[0]; zy = g[1];
+    animieren();
+  }
+
+  // sofort setzen (beim ziehen)
+  function sofort(nz, nx, ny) {
+    nz = Math.max(MIN, Math.min(MAX, nz));
+    var g = grenzen(nz, nx, ny);
+    z = zz = nz; x = zx = g[0]; y = zy = g[1];
+    zeichnen();
   }
 
   function einpassen() {
     basis = Math.min((innerWidth - 48) / bild.naturalWidth, (innerHeight - 96) / bild.naturalHeight);
-    zoom = 1;
-    tx = -bild.naturalWidth * basis / 2;
-    ty = -bild.naturalHeight * basis / 2;
-    anwenden();
+    sofort(1, -bild.naturalWidth * basis / 2, -bild.naturalHeight * basis / 2);
   }
 
   function zeigen(i) {
     index = (i + werke.length) % werke.length;
     var w = werke[index];
-    document.getElementById("name").textContent = w.name + "  " + (index + 1) + "/" + werke.length;
-    bild.onload = einpassen;
+    document.getElementById("name").textContent = w.name;
+    bild.style.opacity = 0;
+    bild.onload = function () { einpassen(); bild.style.opacity = 1; };
     bild.src = "serien/" + id + "/" + w.id + ".jpg";
-    bild.alt = w.name;
+    bild.alt = w.name || serie.titel;
     var g = new Image();
     g.onload = function () {
       if (werke[index] !== w) return;
-      if (!bild.complete || !bild.naturalWidth) { bild.onload = einpassen; bild.src = g.src; return; }
+      if (!bild.complete || !bild.naturalWidth) { bild.onload = function () { einpassen(); bild.style.opacity = 1; }; bild.src = g.src; return; }
       var faktor = bild.naturalWidth / g.naturalWidth;
-      bild.onload = function () { basis = basis * faktor; anwenden(); };
+      bild.onload = function () { basis = basis * faktor; zeichnen(); };
       bild.src = g.src;
     };
     g.src = "serien/" + id + "/gross/" + w.id + ".jpg";
   }
 
-  // leiste blendet bei ruhe aus
   var ruhe = null;
   function wach() {
     leiste.classList.remove("still");
@@ -112,21 +122,13 @@
   function oeffnen(i) {
     betr.classList.add("offen"); leiste.hidden = false;
     document.body.style.overflow = "hidden";
-    zeigen(i);
-    wach();
+    zeigen(i); wach();
   }
   function schliessen() {
     betr.classList.remove("offen"); leiste.hidden = true;
     document.body.style.overflow = "";
     bild.removeAttribute("src");
   }
-
-  STUFEN.forEach(function (z) {
-    var b = document.createElement("button");
-    b.textContent = "×" + z; b.dataset.z = z;
-    b.addEventListener("click", function () { zoomen(z); });
-    stufenEl.appendChild(b);
-  });
 
   document.getElementById("zu").onclick = schliessen;
   document.getElementById("weiter").onclick = function () { zeigen(index + 1); };
@@ -137,64 +139,65 @@
     if (e.key === "Escape") schliessen();
     if (e.key === "ArrowRight") zeigen(index + 1);
     if (e.key === "ArrowLeft") zeigen(index - 1);
-    if (e.key === "+" ) zoomen(STUFEN[Math.min(STUFEN.length - 1, STUFEN.indexOf(zoom) + 1)]);
-    if (e.key === "-" ) zoomen(STUFEN[Math.max(0, STUFEN.indexOf(zoom) - 1)]);
+    if (e.key === "+" || e.key === "=") zielZoom(zz * 1.6, innerWidth / 2, innerHeight / 2);
+    if (e.key === "-") zielZoom(zz / 1.6, innerWidth / 2, innerHeight / 2);
   });
 
-  // mausrad: stufenweise zum mauspunkt
+  // mausrad / trackpad: stufenlos
   betr.addEventListener("wheel", function (e) {
     e.preventDefault();
-    var i = STUFEN.indexOf(zoom) + (e.deltaY < 0 ? 1 : -1);
-    i = Math.max(0, Math.min(STUFEN.length - 1, i));
-    if (STUFEN[i] !== zoom) zoomen(STUFEN[i], e.clientX, e.clientY);
+    var d = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    zielZoom(zz * Math.exp(-d * 0.0022), e.clientX, e.clientY);
   }, { passive: false });
 
-  // doppelklick: eine stufe hinein, auf höchster stufe zurück
   betr.addEventListener("dblclick", function (e) {
-    var i = STUFEN.indexOf(zoom);
-    zoomen(i === STUFEN.length - 1 ? 1 : STUFEN[i + 1], e.clientX, e.clientY);
+    zielZoom(zz > 1.5 ? 1 : 4, e.clientX, e.clientY);
   });
 
-  // ziehen & zwei-finger-zoom
+  // ziehen & zwei finger
   var zeiger = new Map(), start = null, bewegt = false;
+  function neuStart() {
+    var p = Array.from(zeiger.values());
+    if (p.length === 1) start = { n: 1, px: p[0].x, py: p[0].y, x: zx, y: zy };
+    else if (p.length >= 2) start = {
+      n: 2, d: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y),
+      mx: (p[0].x + p[1].x) / 2, my: (p[0].y + p[1].y) / 2, z: zz, x: zx, y: zy
+    };
+    else start = null;
+  }
   betr.addEventListener("pointerdown", function (e) {
     betr.setPointerCapture(e.pointerId);
     zeiger.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    bewegt = false;
-    if (zeiger.size === 1) { start = { x: e.clientX, y: e.clientY, tx: tx, ty: ty }; betr.classList.add("ziehen"); }
-    if (zeiger.size === 2) {
-      var p = Array.from(zeiger.values());
-      start = { d: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y), z: zoom };
-    }
+    if (zeiger.size === 1) bewegt = false;
+    z = zz; x = zx; y = zy; // laufende animation anhalten
+    neuStart();
+    betr.classList.add("ziehen");
   });
   betr.addEventListener("pointermove", function (e) {
-    if (!zeiger.has(e.pointerId)) return;
+    if (!zeiger.has(e.pointerId) || !start) return;
     zeiger.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (zeiger.size === 1 && start && start.tx !== undefined) {
-      var dx = e.clientX - start.x, dy = e.clientY - start.y;
+    var p = Array.from(zeiger.values());
+    if (start.n === 1) {
+      var dx = p[0].x - start.px, dy = p[0].y - start.py;
       if (Math.abs(dx) + Math.abs(dy) > 4) bewegt = true;
-      tx = start.tx + dx; ty = start.ty + dy;
-      begrenzen(); anwenden();
-    } else if (zeiger.size === 2 && start && start.d) {
-      var p = Array.from(zeiger.values());
-      var d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
-      var ziel = start.z * d / start.d;
-      var naechste = STUFEN.reduce(function (a, b) { return Math.abs(b - ziel) < Math.abs(a - ziel) ? b : a; });
-      if (naechste !== zoom) zoomen(naechste, (p[0].x + p[1].x) / 2, (p[0].y + p[1].y) / 2);
+      sofort(zz, start.x + dx, start.y + dy);
+    } else if (p.length >= 2) {
       bewegt = true;
+      var d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+      var mx = (p[0].x + p[1].x) / 2, my = (p[0].y + p[1].y) / 2;
+      var nz = Math.max(MIN, Math.min(MAX, start.z * d / start.d));
+      var ax = start.mx - innerWidth / 2, ay = start.my - innerHeight / 2;
+      var bx = mx - innerWidth / 2, by = my - innerHeight / 2;
+      sofort(nz, bx - (ax - start.x) * nz / start.z, by - (ay - start.y) * nz / start.z);
     }
   });
   function los(e) {
     zeiger.delete(e.pointerId);
-    betr.classList.remove("ziehen");
-    if (zeiger.size === 1) {
-      var p = Array.from(zeiger.values())[0];
-      start = { x: p.x, y: p.y, tx: tx, ty: ty };
-    } else if (zeiger.size === 0) {
-      // klick ins leere schließt, wenn nicht gezogen und ganz herausgezoomt
-      if (!bewegt && zoom === 1 && e.target === betr) schliessen();
-      start = null;
+    if (zeiger.size === 0) {
+      betr.classList.remove("ziehen");
+      if (!bewegt && zz <= 1.01 && e.target === betr) schliessen();
     }
+    neuStart();
   }
   betr.addEventListener("pointerup", los);
   betr.addEventListener("pointercancel", los);
@@ -207,22 +210,22 @@
     document.getElementById("pfadname").textContent = serie.titel;
     document.getElementById("titel").textContent = serie.titel;
     var meta = document.getElementById("meta");
-    meta.textContent = [serie.jahr, serie.werke.length + " arbeiten"].filter(Boolean).join(" · ");
+    if (serie.jahr) meta.append(serie.jahr);
     if (serie.link) {
       var a = document.createElement("a");
       a.href = serie.link; a.target = "_blank"; a.rel = "noopener"; a.textContent = "↗";
-      meta.append("  ", a);
+      meta.append(serie.jahr ? "  " : "", a);
     }
     if (serie.notiz) { var n = document.createElement("p"); n.textContent = serie.notiz; meta.appendChild(n); }
 
     var raster = document.getElementById("raster");
     serie.werke.forEach(function (e, i) {
-      var w = typeof e === "string" ? { id: e, name: e } : { id: e.id, name: e.titel || e.id };
+      var w = typeof e === "string" ? { id: e, name: "" } : { id: e.id, name: e.titel || "" };
       werke.push(w);
       var b = document.createElement("button");
-      b.innerHTML = '<div class="bild"><img loading="lazy" alt=""></div><small><span></span><span>' + (i + 1) + '</span></small>';
+      b.innerHTML = '<div class="bild"><img loading="lazy" alt=""></div><small><span></span></small>';
       b.querySelector("img").src = "serien/" + id + "/klein/" + w.id + ".jpg";
-      b.querySelector("img").alt = w.name;
+      b.querySelector("img").alt = w.name || serie.titel;
       b.querySelector("small span").textContent = w.name;
       b.addEventListener("click", function () { oeffnen(i); });
       raster.appendChild(b);
